@@ -23,4 +23,8 @@ public abstract class EstruturaDados<T> {
         return estrutura.length;
     }
     
+    public int getPosicaoAtual(){
+    	return this.posicao;
+    }
+    
 }

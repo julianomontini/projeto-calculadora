@@ -1,6 +1,8 @@
 package com.calculadora;
 
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.estruturadados.*;
 
@@ -8,10 +10,43 @@ public class Calculadora {
 	
 	public static Double calculaExpressao(String expressao) throws Exception{
 		
+		validaExpressao(expressao);
+		
 		Fila<String> tokens = convertToTokens(expressao);
 		Fila<String> posfix = convertePosfix(tokens);
 		
 		return calculaResultado(posfix);
+	}
+	
+	private static void validaExpressao(String expressao) throws Exception{
+		
+		Pattern verificaLetra = Pattern.compile("[A-Za-z]+$");
+		Pattern abreParenteses = Pattern.compile("[(]");
+		Pattern fechaParenteses = Pattern.compile("[)]");
+		
+		int countAbre = 0;
+		int countFecha = 0;
+		
+		
+		Matcher m = verificaLetra.matcher(expressao);
+		if(m.find()){
+			throw new Exception("Expressao contem letras");
+		}
+		
+		m = abreParenteses.matcher(expressao);
+		while(m.find()){
+			countAbre++;
+		}
+		
+		m = fechaParenteses.matcher(expressao);
+		while(m.find()){
+			countFecha++;
+		}
+		
+		if(countAbre != countFecha){
+			throw new Exception("Quantidade de parenteses invalida");
+		}
+		
 	}
 	
 	private static Double calculaResultado(Fila<String> posfix) throws Exception{
@@ -33,12 +68,40 @@ public class Calculadora {
 				pilha.remover();
 				n1 = Double.valueOf(pilha.recuperar());
 				pilha.remover();
+				pilha.adicionar(String.valueOf(realizaOperacao(n1, n2, op)));
+				n1 = null;
+				n2 = null;
+				op = null;
+				if(pilha.getPosicaoAtual() == 0 && posfix.estaVazio()){
+					return Double.valueOf(pilha.recuperar());
+				}
 			}
 			
 			
 		}
 		
-		return null;
+		throw new Exception("Expressao mal formada");
+	}
+	
+	private static Double realizaOperacao(Double num1, Double num2, Character op)throws Exception{
+		
+		switch(op){
+		
+		case '+':
+			return num1 + num2;
+		case '-':
+			return num1 - num2;
+		case '*':
+			return num1 * num2;
+		case '/':
+			return num1 / num2;
+		case '^':
+			return Math.pow(num1, num2);
+		default:
+			throw new Exception("Operacao selecionada e invalida");
+		
+		}
+		
 	}
 	
 	private static Fila<String> convertToTokens(String expressao)throws Exception{
