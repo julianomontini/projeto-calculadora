@@ -10,6 +10,8 @@ public class Calculadora {
 	
 	public static Double calculaExpressao(String expressao) throws Exception{
 		
+		expressao = expressao.replaceAll("\\s+","");
+		
 		validaExpressao(expressao);
 		
 		Fila<String> tokens = convertToTokens(expressao);
@@ -20,7 +22,7 @@ public class Calculadora {
 	
 	private static void validaExpressao(String expressao) throws Exception{
 		
-		Pattern verificaLetra = Pattern.compile("[A-Za-z]+$");
+		Pattern verificaLetra = Pattern.compile("[^/+/-/*///^0-9/./)/(]+");
 		Pattern abreParenteses = Pattern.compile("[(]");
 		Pattern fechaParenteses = Pattern.compile("[)]");
 		
@@ -30,7 +32,7 @@ public class Calculadora {
 		
 		Matcher m = verificaLetra.matcher(expressao);
 		if(m.find()){
-			throw new Exception("Expressao contem letras");
+			throw new Exception("Expressao contem caracteres invalidos");
 		}
 		
 		m = abreParenteses.matcher(expressao);
