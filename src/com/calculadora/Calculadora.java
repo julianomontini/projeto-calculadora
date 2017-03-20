@@ -22,7 +22,7 @@ public class Calculadora {
 	
 	private static void validaExpressao(String expressao) throws Exception{
 		
-		Pattern verificaLetra = Pattern.compile("[^/+/-/*///^0-9/./)/(]+");
+		Pattern verificaLetra = Pattern.compile("[^-/+/*///^0-9/./)/(]+");
 		Pattern abreParenteses = Pattern.compile("[(]");
 		Pattern fechaParenteses = Pattern.compile("[)]");
 		
